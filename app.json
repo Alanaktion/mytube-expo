@@ -2,7 +2,7 @@
   "expo": {
     "name": "MyTube",
     "slug": "mytube",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "mytube",
@@ -20,14 +20,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.phpizza.mytube"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundImage": "./assets/images/adaptive-bg.png"
       },
-      "icon": "./assets/images/icon.png"
+      "icon": "./assets/images/icon.png",
+      "package": "com.phpizza.mytube"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
