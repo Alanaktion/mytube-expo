@@ -5,9 +5,10 @@ import * as React from 'react';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
-import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
+import VideosScreen from '../screens/VideosScreen';
+import ChannelsScreen from '../screens/ChannelsScreen';
+import AboutScreen from '../screens/AboutScreen';
+import { BottomTabParamList, VideosParamList, ChannelsParamList, AboutParamList } from '../types';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -16,18 +17,25 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="Videos"
       tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
       <BottomTab.Screen
-        name="TabOne"
-        component={TabOneNavigator}
+        name="Videos"
+        component={VideosNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="videocam-outline" color={color} />,
         }}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoNavigator}
+        name="Channels"
+        component={ChannelsNavigator}
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="tv-outline" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="About"
+        component={AboutNavigator}
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
         }}
@@ -44,30 +52,44 @@ function TabBarIcon(props: { name: string; color: string }) {
 
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const TabOneStack = createStackNavigator<TabOneParamList>();
+const VideosStack = createStackNavigator<VideosParamList>();
 
-function TabOneNavigator() {
+function VideosNavigator() {
   return (
-    <TabOneStack.Navigator>
-      <TabOneStack.Screen
-        name="TabOneScreen"
-        component={TabOneScreen}
-        options={{ headerTitle: 'Tab One Title' }}
+    <VideosStack.Navigator>
+      <VideosStack.Screen
+        name="VideosScreen"
+        component={VideosScreen}
+        options={{ headerTitle: 'Videos' }}
       />
-    </TabOneStack.Navigator>
+    </VideosStack.Navigator>
   );
 }
 
-const TabTwoStack = createStackNavigator<TabTwoParamList>();
+const ChannelsStack = createStackNavigator<ChannelsParamList>();
 
-function TabTwoNavigator() {
+function ChannelsNavigator() {
   return (
-    <TabTwoStack.Navigator>
-      <TabTwoStack.Screen
-        name="TabTwoScreen"
-        component={TabTwoScreen}
-        options={{ headerTitle: 'Tab Two Title' }}
+    <ChannelsStack.Navigator>
+      <ChannelsStack.Screen
+        name="ChannelsScreen"
+        component={ChannelsScreen}
+        options={{ headerTitle: 'Channels' }}
       />
-    </TabTwoStack.Navigator>
+    </ChannelsStack.Navigator>
+  );
+}
+
+const AboutStack = createStackNavigator<AboutParamList>();
+
+function AboutNavigator() {
+  return (
+    <AboutStack.Navigator>
+      <AboutStack.Screen
+        name="AboutScreen"
+        component={AboutScreen}
+        options={{ headerTitle: 'About' }}
+      />
+    </AboutStack.Navigator>
   );
 }

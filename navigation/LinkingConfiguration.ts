@@ -6,14 +6,19 @@ export default {
     screens: {
       Root: {
         screens: {
-          TabOne: {
+          Videos: {
             screens: {
-              TabOneScreen: 'one',
+              VideosScreen: 'videos',
             },
           },
-          TabTwo: {
+          Channels: {
             screens: {
-              TabTwoScreen: 'two',
+              ChannelsScreen: 'channels',
+            },
+          },
+          About: {
+            screens: {
+              AboutScreen: 'about',
             },
           },
         },
