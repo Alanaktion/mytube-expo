@@ -18,6 +18,7 @@ const VIDEO_QUERY = gql`
         description
         poster_url
         source_link
+        file_link
         published_at
         created_at
         channel {
@@ -79,10 +80,8 @@ export default function VideosScreen({ route }: Props) {
 
   return (
     <View style={styles.container}>
-      {/* TODO: call API to get actual video file URL */}
-      {/* TODO: toggle fullscreen with screen orientation */}
       <VideoPlayer
-        source={{ uri: `${baseUri}/storage/videos/${video.uuid}.mp4` }}
+        source={{ uri: `${baseUri}${video.file_link}` }}
         resizeMode="contain"
         useNativeControls
         shouldPlay
