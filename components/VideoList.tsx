@@ -1,18 +1,23 @@
-import React from "react";
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import React, { useRef } from "react";
+import { ActivityIndicator, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { gql, useQuery } from "@apollo/react-hooks";
+import { useScrollToTop } from '@react-navigation/native';
 
 import { Icon, Text } from "./Themed";
+import { baseUri } from "../api/Client";
+import { Video } from "../types";
+import Colors from "../constants/Colors";
 
 const VIDEOS_QUERY = gql`
-  {
-    videos(page: 1) {
+  query Videos($page: Int!, $channelId: Int) {
+    videos(page: $page, channel_id: $channelId) {
       data {
         id
         uuid
         title
+        thumbnail_url
+        published_at
         channel {
-          id
           uuid
           title
         }
@@ -24,13 +29,25 @@ const VIDEOS_QUERY = gql`
   }
 `;
 
-export function VideoList() {
-  const { data, loading, error } = useQuery(VIDEOS_QUERY);
+type Props = {
+  onItemPress: Function;
+  channelId?: Number;
+};
+
+export function VideoList({ onItemPress, channelId }: Props) {
+  const { data, loading, error, fetchMore } = useQuery(VIDEOS_QUERY, {
+    variables: {
+      page: 1,
+      channelId,
+    },
+  });
+  const ref = useRef(null);
+  useScrollToTop(ref);
 
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator />
+        <ActivityIndicator size="large" />
       </View>
     );
   }
@@ -45,23 +62,66 @@ export function VideoList() {
     );
   }
 
+  if (!data.videos.total) {
+    <View style={styles.centerContainer}>
+      <Text>No videos found.</Text>
+    </View>
+  }
+
+  const renderItem = ({ item }: { item: Video }) => (
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => {
+        onItemPress(item);
+      }}
+      activeOpacity={0.6}
+    >
+      {item.thumbnail_url ?
+        <Image style={styles.thumbnail} source={{ uri: `${baseUri}${item.thumbnail_url}` }} /> :
+        <View style={[styles.thumbnail, {backgroundColor: 'rgba(127, 127, 127, 0.2)'}]} />
+      }
+      <View style={{ flexShrink: 1 }}>
+        <Text style={{ marginBottom: 2, flexGrow: 1, }}>{item.title}</Text>
+        <Text lightColor={Colors.light.link} darkColor={Colors.dark.link}>{item.channel.title}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
-    <FlatList data={data.allItems.data} renderItem={videoItem} keyExtractor={item => item.id} />
+    <FlatList data={data.videos.data}
+      renderItem={renderItem}
+      keyExtractor={item => `${item.id}`}
+      onEndReached={() => {
+        if (data.videos.current_page < data.videos.last_page) {
+          fetchMore({
+            variables: {
+              page: data.videos.current_page + 1,
+            },
+          });
+        }
+      }}
+      onEndReachedThreshold={0.15}
+      ref={ref}
+    />
   );
 }
 
-function videoItem(video: any) {
-  return (
-    <View>
-      <Text>{video.title}</Text>
-    </View>
-  );
-}
 const styles = StyleSheet.create({
   centerContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    padding: 10,
+    borderBottomColor: 'rgba(127, 127, 127, 0.2)',
+    borderBottomWidth: 0.5,
+  },
+  thumbnail: {
+    width: 128,
+    height: 72,
+    marginRight: 10,
   },
 });

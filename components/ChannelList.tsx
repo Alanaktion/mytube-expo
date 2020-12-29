@@ -1,17 +1,20 @@
-import React from "react";
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import React, { useRef } from "react";
+import { ActivityIndicator, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { gql, useQuery } from "@apollo/react-hooks";
+import { useScrollToTop } from '@react-navigation/native';
 
 import { Icon, Text } from "./Themed";
+import { baseUri } from "../api/Client";
+import { Channel } from "../types";
 
 const CHANNELS_QUERY = gql`
-  {
-    channels(page: 1) {
+  query Channels($page: Int!) {
+    channels(page: $page) {
       data {
         id
         uuid
-        type
         title
+        image_url
       }
       current_page
       last_page
@@ -20,13 +23,19 @@ const CHANNELS_QUERY = gql`
   }
 `;
 
-export function ChannelList() {
-  const { data, loading, error } = useQuery(CHANNELS_QUERY);
+export function ChannelList({ onItemPress }: { onItemPress: Function }) {
+  const { data, loading, error, fetchMore } = useQuery(CHANNELS_QUERY, {
+    variables: {
+      page: 1,
+    },
+  });
+  const ref = useRef(null);
+  useScrollToTop(ref);
 
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator />
+        <ActivityIndicator size="large" />
       </View>
     );
   }
@@ -41,23 +50,67 @@ export function ChannelList() {
     );
   }
 
+  if (!data.channels.total) {
+    return (
+      <View style={styles.centerContainer}>
+        <Text>No channels found.</Text>
+      </View>
+    );
+  }
+
+  const renderItem = ({ item }: { item: Channel }) => (
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => {
+        onItemPress(item);
+      }}
+      activeOpacity={0.6}
+    >
+      {item.image_url ?
+        <Image style={styles.avatar} source={{ uri: `${baseUri}${item.image_url}` }} /> :
+        <View style={[styles.avatar, {backgroundColor: 'rgba(127, 127, 127, 0.2)'}]} />
+      }
+      <View style={{ flexShrink: 1 }}>
+        <Text>{item.title}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
-    <FlatList data={data.allItems.data} renderItem={ChannelItem} keyExtractor={item => item.id} />
+    <FlatList data={data.channels.data}
+      renderItem={renderItem}
+      keyExtractor={item => `${item.id}`}
+      onEndReached={() => {
+        if (data.channels.current_page < data.channels.last_page) {
+          fetchMore({
+            variables: {
+              page: data.channels.current_page + 1,
+            },
+          });
+        }
+      }}
+      onEndReachedThreshold={0.15}
+      ref={ref}
+    />
   );
 }
 
-function ChannelItem(channel: any) {
-  return (
-    <View>
-      <Text>{channel.title}</Text>
-    </View>
-  );
-}
 const styles = StyleSheet.create({
   centerContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    marginRight: 10,
+    borderRadius: 30,
   },
 });

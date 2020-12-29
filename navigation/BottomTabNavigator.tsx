@@ -6,7 +6,9 @@ import * as React from 'react';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import VideosScreen from '../screens/VideosScreen';
+import VideoScreen from '../screens/VideoScreen';
 import ChannelsScreen from '../screens/ChannelsScreen';
+import ChannelScreen from '../screens/ChannelScreen';
 import AboutScreen from '../screens/AboutScreen';
 import { BottomTabParamList, VideosParamList, ChannelsParamList, AboutParamList } from '../types';
 
@@ -62,6 +64,11 @@ function VideosNavigator() {
         component={VideosScreen}
         options={{ headerTitle: 'Videos' }}
       />
+      <VideosStack.Screen
+        name="VideoScreen"
+        component={VideoScreen}
+        options={{ headerTitle: '' }}
+      />
     </VideosStack.Navigator>
   );
 }
@@ -75,6 +82,11 @@ function ChannelsNavigator() {
         name="ChannelsScreen"
         component={ChannelsScreen}
         options={{ headerTitle: 'Channels' }}
+      />
+      <ChannelsStack.Screen
+        name="ChannelScreen"
+        component={ChannelScreen}
+        options={({ route }) => ({ title: route.params?.title || 'Channel' })}
       />
     </ChannelsStack.Navigator>
   );
