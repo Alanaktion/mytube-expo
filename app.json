@@ -7,10 +7,11 @@
     "icon": "./assets/images/icon.png",
     "scheme": "mytube",
     "userInterfaceStyle": "automatic",
+    "privacy": "public",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#60a5fa"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -24,8 +25,9 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "backgroundImage": "./assets/images/adaptive-bg.png"
+      },
+      "icon": "./assets/images/icon.png"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

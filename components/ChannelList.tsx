@@ -8,8 +8,8 @@ import { baseUri } from "../api/Client";
 import { Channel } from "../types";
 
 const CHANNELS_QUERY = gql`
-  query Channels($page: Int!) {
-    channels(page: $page) {
+  query Channels($page: Int!, $search: String) {
+    channels(page: $page, search: $search) {
       data {
         id
         uuid
@@ -23,10 +23,16 @@ const CHANNELS_QUERY = gql`
   }
 `;
 
-export function ChannelList({ onItemPress }: { onItemPress: Function }) {
+type Props = {
+  onItemPress: Function;
+  search: String;
+};
+
+export function ChannelList({ onItemPress, search }: Props) {
   const { data, loading, error, fetchMore } = useQuery(CHANNELS_QUERY, {
     variables: {
       page: 1,
+      search,
     },
   });
   const ref = useRef(null);
@@ -81,7 +87,7 @@ export function ChannelList({ onItemPress }: { onItemPress: Function }) {
       renderItem={renderItem}
       keyExtractor={item => `${item.id}`}
       onEndReached={() => {
-        if (data.channels.current_page < data.channels.last_page) {
+        if (data.channels.current_page < data.channels.last_page && typeof fetchMore === 'function') {
           fetchMore({
             variables: {
               page: data.channels.current_page + 1,

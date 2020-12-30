@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Client } from '../api/Client';
 
 import { Text, View } from '../components/Themed';
+import Colors from '../constants/Colors';
 
 export default function AboutScreen() {
   return (
@@ -15,6 +18,16 @@ export default function AboutScreen() {
           darkColor="rgba(255,255,255,0.8)">
           This app is a work in progress, and is not really useful right now.
         </Text>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={async () => {
+            await Client.resetStore();
+            alert('Cache reset!');
+          }}
+          style={{ marginTop: 15 }}
+        >
+          <Text style={styles.getStartedText} lightColor={Colors.light.link} darkColor={Colors.dark.link}>Reset Cache</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

@@ -33,6 +33,7 @@ export default function ChannelScreen({ route, navigation }: Props) {
     variables: {
       uuid,
     },
+    fetchPolicy: 'network-only',
   });
 
   if (loading) {

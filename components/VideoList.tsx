@@ -9,8 +9,8 @@ import { Video } from "../types";
 import Colors from "../constants/Colors";
 
 const VIDEOS_QUERY = gql`
-  query Videos($page: Int!, $channelId: Int) {
-    videos(page: $page, channel_id: $channelId) {
+  query Videos($page: Int!, $channelId: Int, $search: String) {
+    videos(page: $page, channel_id: $channelId, search: $search) {
       data {
         id
         uuid
@@ -32,13 +32,15 @@ const VIDEOS_QUERY = gql`
 type Props = {
   onItemPress: Function;
   channelId?: Number;
+  search?: String;
 };
 
-export function VideoList({ onItemPress, channelId }: Props) {
+export function VideoList({ onItemPress, channelId, search }: Props) {
   const { data, loading, error, fetchMore } = useQuery(VIDEOS_QUERY, {
     variables: {
       page: 1,
       channelId,
+      search,
     },
   });
   const ref = useRef(null);
@@ -76,10 +78,7 @@ export function VideoList({ onItemPress, channelId }: Props) {
       }}
       activeOpacity={0.6}
     >
-      {item.thumbnail_url ?
-        <Image style={styles.thumbnail} source={{ uri: `${baseUri}${item.thumbnail_url}` }} /> :
-        <View style={[styles.thumbnail, {backgroundColor: 'rgba(127, 127, 127, 0.2)'}]} />
-      }
+      <Image style={styles.thumbnail} source={{ uri: item.thumbnail_url ? `${baseUri}${item.thumbnail_url}` : `${baseUri}/images/posters/${item.uuid}` }} />
       <View style={{ flexShrink: 1 }}>
         <Text style={{ marginBottom: 2, flexGrow: 1, }}>{item.title}</Text>
         <Text lightColor={Colors.light.link} darkColor={Colors.dark.link}>{item.channel.title}</Text>
@@ -92,7 +91,7 @@ export function VideoList({ onItemPress, channelId }: Props) {
       renderItem={renderItem}
       keyExtractor={item => `${item.id}`}
       onEndReached={() => {
-        if (data.videos.current_page < data.videos.last_page) {
+        if (data.videos.current_page < data.videos.last_page && typeof fetchMore === 'function') {
           fetchMore({
             variables: {
               page: data.videos.current_page + 1,

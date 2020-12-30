@@ -11,11 +11,13 @@ export type BottomTabParamList = {
 
 export type VideosParamList = {
   VideosScreen: undefined;
+  VideoSearchScreen: undefined;
   VideoScreen: undefined;
 };
 
 export type ChannelsParamList = {
   ChannelsScreen: undefined;
+  ChannelSearchScreen: undefined;
   ChannelScreen: undefined;
 };
 

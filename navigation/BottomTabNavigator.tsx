@@ -6,8 +6,10 @@ import * as React from 'react';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import VideosScreen from '../screens/VideosScreen';
+import VideoSearchScreen from '../screens/VideoSearchScreen';
 import VideoScreen from '../screens/VideoScreen';
 import ChannelsScreen from '../screens/ChannelsScreen';
+import ChannelSearchScreen from '../screens/ChannelSearchScreen';
 import ChannelScreen from '../screens/ChannelScreen';
 import AboutScreen from '../screens/AboutScreen';
 import { BottomTabParamList, VideosParamList, ChannelsParamList, AboutParamList } from '../types';
@@ -62,12 +64,17 @@ function VideosNavigator() {
       <VideosStack.Screen
         name="VideosScreen"
         component={VideosScreen}
-        options={{ headerTitle: 'Videos' }}
+        options={{ title: 'Videos' }}
+      />
+      <VideosStack.Screen
+        name="VideoSearchScreen"
+        component={VideoSearchScreen}
+        options={{ title: 'Search Videos' }}
       />
       <VideosStack.Screen
         name="VideoScreen"
         component={VideoScreen}
-        options={{ headerTitle: '' }}
+        options={{ title: '' }}
       />
     </VideosStack.Navigator>
   );
@@ -81,7 +88,12 @@ function ChannelsNavigator() {
       <ChannelsStack.Screen
         name="ChannelsScreen"
         component={ChannelsScreen}
-        options={{ headerTitle: 'Channels' }}
+        options={{ title: 'Channels' }}
+      />
+      <ChannelsStack.Screen
+        name="ChannelSearchScreen"
+        component={ChannelSearchScreen}
+        options={{ title: 'Search Channels' }}
       />
       <ChannelsStack.Screen
         name="ChannelScreen"
@@ -100,7 +112,7 @@ function AboutNavigator() {
       <AboutStack.Screen
         name="AboutScreen"
         component={AboutScreen}
-        options={{ headerTitle: 'About' }}
+        options={{ title: 'About' }}
       />
     </AboutStack.Navigator>
   );

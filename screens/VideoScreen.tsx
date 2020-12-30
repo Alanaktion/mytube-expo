@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, Image, ScaledSize, ScrollView, StyleSheet } from 'react-native';
 import { Video as VideoPlayer } from 'expo-av';
 import { gql, useQuery } from '@apollo/client';
@@ -7,6 +7,7 @@ import { Icon, Text, View } from '../components/Themed';
 import { baseUri } from '../api/Client';
 import { Video } from '../types';
 import Colors from '../constants/Colors';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const VIDEO_QUERY = gql`
   query Videos($uuid: String!) {
@@ -38,14 +39,16 @@ type Props = {
   navigation: any;
 };
 
-export default function VideosScreen({ route }: Props) {
+export default function VideosScreen({ route, navigation }: Props) {
   const { uuid } = route.params;
   const { data, loading, error } = useQuery(VIDEO_QUERY, {
     variables: {
       uuid,
     },
-  })
+    fetchPolicy: 'network-only',
+  });
   const [dimensions, setDimensions] = useState({ window });
+  const ref = useRef(null);
 
   const onChange = ({ window }: { window: ScaledSize }) => {
     setDimensions({ window });
@@ -78,26 +81,47 @@ export default function VideosScreen({ route }: Props) {
   const video: Video = data.videos.data[0];
   const { channel } = video;
 
+  const playerHeight = Math.round(dimensions.window.width / 16 * 9);
+  const posterUrl = video.poster_url ? `${baseUri}${video.poster_url}` : `${baseUri}/images/posters/${video.uuid}`;
+
   return (
     <View style={styles.container}>
-      <VideoPlayer
-        source={{ uri: `${baseUri}${video.file_link}` }}
-        resizeMode="contain"
-        useNativeControls
-        shouldPlay
-        usePoster
-        posterSource={{ uri: `${baseUri}${video.poster_url}` }}
-        style={{ height: Math.round(dimensions.window.width / 16 * 9) }}
-      />
+      {video.file_link ?
+        <VideoPlayer
+          source={{ uri: `${baseUri}${video.file_link}` }}
+          resizeMode="contain"
+          useNativeControls
+          shouldPlay
+          usePoster
+          posterSource={{ uri: posterUrl }}
+          style={{ height: playerHeight }}
+          ref={ref}
+        /> :
+        <View style={{ position: 'relative' }}>
+          <Image
+            source={{ uri: posterUrl }}
+            style={{ width: dimensions.window.width, height: playerHeight }}
+            blurRadius={10}
+          />
+          <View style={styles.videoPlaceholder}>
+            <Text lightColor="#FCA5A5" darkColor="#FCA5A5">No video file available.</Text>
+          </View>
+        </View>
+      }
       <ScrollView>
         <View style={styles.meta}>
           <Text style={styles.title}>{video.title}</Text>
-          <View style={styles.channel}>
+          <TouchableOpacity style={styles.channel} activeOpacity={0.6} onPress={() => {
+            navigation.navigate('ChannelScreen', {
+              uuid: channel.uuid,
+              title: channel.title,
+            });
+          }}>
             {channel.image_url &&
               <Image source={{ uri: `${baseUri}${channel.image_url}` }} style={styles.avatar} />
             }
             <Text lightColor={Colors.light.link} darkColor={Colors.dark.link}>{channel.title}</Text>
-          </View>
+          </TouchableOpacity>
           <Text>{video.description}</Text>
         </View>
       </ScrollView>
@@ -114,6 +138,16 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  videoPlaceholder: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   meta: {
     padding: 10,
