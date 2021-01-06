@@ -1,16 +1,13 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import { Linking, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Client, getBaseUri } from '../api/Client';
 
 import { Text, View } from '../components/Themed';
 import Colors from '../constants/Colors';
-import { AuthContext } from '../navigation';
+import { ClientContext } from '../api/Client';
 
 export default function AboutScreen() {
-  const { clearUri } = React.useContext(AuthContext);
-
-  const baseUri = getBaseUri();
+  const { baseUri, clearUri } = React.useContext(ClientContext);
 
   return (
     <View style={styles.container}>
@@ -29,27 +26,34 @@ export default function AboutScreen() {
         <Text
           style={styles.getStartedText}
           lightColor={Colors.light.muted}
-          darkColor={Colors.dark.muted}
-        >
-          This app is a work in progress, and is not really useful right now.
-        </Text>
-        <TouchableOpacity
-          activeOpacity={0.6}
-          onPress={async () => {
-            await Client.resetStore();
-            clearUri();
-          }}
-          style={{ marginTop: 15 }}
-        >
-          <Text
-            style={styles.getStartedText}
+          darkColor={Colors.dark.muted}>
+          This is a simple mobile app wrapping the <Text
+            onPress={() => {Linking.openURL('https://github.com/Alanaktion/mytube')}}
             lightColor={Colors.light.link}
-            darkColor={Colors.dark.link}
-          >
-            Reset App
-          </Text>
-        </TouchableOpacity>
+            darkColor={Colors.dark.link}>MyTube</Text> project.
+        </Text>
+        <Text
+          style={styles.getStartedText}
+          lightColor={Colors.light.muted}
+          darkColor={Colors.dark.muted} >
+          You can use it to browse and view content on self-hosted MyTube instances.
+        </Text>
       </View>
+      <TouchableOpacity
+        activeOpacity={0.6}
+        onPress={async () => {
+          clearUri();
+        }}
+        style={{ marginTop: 30 }}
+      >
+        <Text
+          style={styles.getStartedText}
+          lightColor={Colors.light.link}
+          darkColor={Colors.dark.link}
+        >
+          Reset App
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -79,5 +83,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     lineHeight: 24,
     textAlign: 'center',
+    marginBottom: 5,
   },
 });

@@ -13,38 +13,48 @@ import ChannelSearchScreen from '../screens/ChannelSearchScreen';
 import ChannelScreen from '../screens/ChannelScreen';
 import AboutScreen from '../screens/AboutScreen';
 import { BottomTabParamList, VideosParamList, ChannelsParamList, AboutParamList } from '../types';
+import { ApolloProvider } from '@apollo/client';
+import { ClientContext } from '../api/Client';
+import { View } from '../components/Themed';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
 export default function BottomTabNavigator() {
   const colorScheme = useColorScheme();
+  const { client } = React.useContext(ClientContext);
+
+  if (client === null) {
+    return <View></View>;
+  }
 
   return (
-    <BottomTab.Navigator
-      initialRouteName="Videos"
-      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
-      <BottomTab.Screen
-        name="Videos"
-        component={VideosNavigator}
-        options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="videocam-outline" color={color} />,
-        }}
-      />
-      <BottomTab.Screen
-        name="Channels"
-        component={ChannelsNavigator}
-        options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="tv-outline" color={color} />,
-        }}
-      />
-      <BottomTab.Screen
-        name="About"
-        component={AboutNavigator}
-        options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
-        }}
-      />
-    </BottomTab.Navigator>
+    <ApolloProvider client={client}>
+      <BottomTab.Navigator
+        initialRouteName="Videos"
+        tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
+        <BottomTab.Screen
+          name="Videos"
+          component={VideosNavigator}
+          options={{
+            tabBarIcon: ({ color }) => <TabBarIcon name="videocam-outline" color={color} />,
+          }}
+        />
+        <BottomTab.Screen
+          name="Channels"
+          component={ChannelsNavigator}
+          options={{
+            tabBarIcon: ({ color }) => <TabBarIcon name="tv-outline" color={color} />,
+          }}
+        />
+        <BottomTab.Screen
+          name="About"
+          component={AboutNavigator}
+          options={{
+            tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+          }}
+        />
+      </BottomTab.Navigator>
+    </ApolloProvider>
   );
 }
 

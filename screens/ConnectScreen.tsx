@@ -1,66 +1,60 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as React from 'react';
-import { Button, StyleSheet } from 'react-native';
-import { setBaseUri } from '../api/Client';
+import { Button, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, StyleSheet, Platform } from 'react-native';
 
 import { Text, TextInput, View } from '../components/Themed';
 import Colors from '../constants/Colors';
-import { AuthContext } from '../navigation';
+import { ClientContext } from '../api/Client';
 
-type Props = {
-  navigation: any;
-};
-
-export default function ConnectScreen({ navigation }: Props) {
+export default function ConnectScreen() {
   const [value, onChangeText] = React.useState('');
 
-  const { setUri } = React.useContext(AuthContext);
+  const { setUri } = React.useContext(ClientContext);
 
   const connect = async () => {
     const isUrl = isValidHttpUrl(value);
     if (isUrl) {
+      // TODO: verify URI has a reachable GraphQL API with expected queries
       const baseUri = value.replace(/\/$/, '');
-      setBaseUri(baseUri);
-      await AsyncStorage.setItem('baseUri', baseUri);
       setUri(baseUri);
+    } else {
+      alert('Please enter a valid URL. This should include a protocol, domain, and optional trailing slash.');
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{ marginBottom: 25 }}>
-        <Text
-          lightColor={Colors.light.link}
-          darkColor={Colors.dark.link}
-          style={styles.title}>
-          MyTube
-        </Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1, backgroundColor: Colors.light.tint }}>
+      <View style={styles.container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container}>
+            <View style={styles.form}>
+              <View style={{ marginBottom: 25 }}>
+                <Text style={styles.title}>MyTube</Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text>Enter a MyTube instance URL to get started:</Text>
+              </View>
+              <View style={styles.formRow}>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={text => onChangeText(text)}
+                  value={value}
+                  autoCapitalize="none"
+                  autoCompleteType="off"
+                  autoCorrect={false}
+                  autoFocus
+                  keyboardType="url"
+                />
+              </View>
+              <View style={{ marginTop: 10 }}>
+                <Button title="Connect" onPress={() => { connect() }} />
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
       </View>
-      <View style={styles.formRow}>
-        <Text>Enter a MyTube instance URL to get started:</Text>
-      </View>
-      <View style={styles.formRow}>
-        <TextInput
-          style={styles.input}
-          onChangeText={text => onChangeText(text)}
-          value={value}
-          autoCapitalize="none"
-          autoCompleteType="off"
-          autoFocus
-          keyboardType="url"
-        />
-      </View>
-      <View style={styles.formRow}>
-        <Text
-          lightColor={Colors.light.muted}
-          darkColor={Colors.dark.muted}>
-          This should include a protocol, domain, and optional trailing slash.
-        </Text>
-      </View>
-      <View style={{ padding: 15 }}>
-        <Button title="Connect" onPress={() => { connect() }} />
-      </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -68,22 +62,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
   title: {
     fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  form: {
+    marginHorizontal: 15,
+    paddingHorizontal: 15,
+    paddingTop: 30,
+    paddingBottom: 15,
+    borderRadius: 10,
+  },
   formRow: {
     marginTop: 5,
-    paddingHorizontal: 15,
   },
   input: {
     borderColor: 'rgba(127, 127, 127, 0.5)',
     borderWidth: 1,
     borderRadius: 3,
     paddingHorizontal: 5,
-    paddingVertical: 2,
+    paddingVertical: 3,
+    fontSize: 16,
   },
 });
 

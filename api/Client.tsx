@@ -1,16 +1,7 @@
+import * as React from 'react';
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-let baseUri = '';
-
-export function getBaseUri() {
-  return baseUri;
-}
-
-export function setBaseUri(val: string) {
-  baseUri = val;
-}
-
-const cache = new InMemoryCache({
+export const Cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
@@ -41,10 +32,16 @@ const cache = new InMemoryCache({
   },
 });
 
-export const Client = new ApolloClient({
-  uri: `${baseUri}/graphql`,
-  headers: {
-    // authorization: `Bearer ${accessToken}`,
-  },
-  cache,
+type ContextType = {
+  setUri: (value: string) => void;
+  clearUri: () => void;
+  client: ApolloClient<any>|null;
+  baseUri: string|null;
+};
+
+export const ClientContext = React.createContext<ContextType>({
+  setUri: (value: string) => console.warn('No setUri handler set'),
+  clearUri: () => {},
+  client: null,
+  baseUri: null,
 });

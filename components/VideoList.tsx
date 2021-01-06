@@ -4,9 +4,9 @@ import { gql, useQuery } from "@apollo/react-hooks";
 import { useScrollToTop } from '@react-navigation/native';
 
 import { Icon, Text } from "./Themed";
-import { getBaseUri } from "../api/Client";
 import { Video } from "../types";
 import Colors from "../constants/Colors";
+import { ClientContext } from "../api/Client";
 
 const VIDEOS_QUERY = gql`
   query Videos($page: Int!, $channelId: Int, $search: String) {
@@ -70,7 +70,7 @@ export function VideoList({ onItemPress, channelId, search }: Props) {
     </View>
   }
 
-  const baseUri = getBaseUri();
+  const { baseUri } = React.useContext(ClientContext);
   const renderItem = ({ item }: { item: Video }) => (
     <TouchableOpacity
       style={styles.itemContainer}

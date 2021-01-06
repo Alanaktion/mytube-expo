@@ -3,16 +3,15 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { ColorSchemeName } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ApolloClient } from '@apollo/client';
 
 import ConnectScreen from '../screens/ConnectScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import { RootStackParamList } from '../types';
-import { setBaseUri as setClientBaseUri } from '../api/Client';
+import { Cache, ClientContext } from '../api/Client';
 import BottomTabNavigator from './BottomTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
 
-// If you are not familiar with React Navigation, we recommend going through the
-// "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
     <NavigationContainer
@@ -23,17 +22,10 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
   );
 }
 
-// A root stack navigator is often used for displaying modals on top of all other content
-// Read more here: https://reactnavigation.org/docs/modal
 const Stack = createStackNavigator<RootStackParamList>();
 
-export const AuthContext = React.createContext({
-  setUri: (value: string) => {},
-  clearUri: () => {},
-});
-
 type Action = {
-  type: string;
+  type: 'RESTORE_URI'|'SET_URI'|'CLEAR_URI';
   uri?: string|null;
 };
 
@@ -75,9 +67,6 @@ function RootNavigator() {
 
       try {
         val = await AsyncStorage.getItem('baseUri');
-        if (val !== null) {
-          setClientBaseUri(val);
-        }
       } catch (e) {
         // Restoring base URI failed
       }
@@ -88,29 +77,39 @@ function RootNavigator() {
     bootstrapAsync();
   }, []);
 
-  const authContext = React.useMemo(
+  const clientContext = React.useMemo(
     () => ({
       setUri: async (value: string) => {
         // This function is called by the connect screen to set the base URI
+        await AsyncStorage.setItem('baseUri', value);
         dispatch({ type: 'SET_URI', uri: value });
       },
-      clearUri: () => dispatch({ type: 'CLEAR_URI' }),
+      clearUri: async () => {
+        // This function is called by the about screen to clear the base URI
+        await AsyncStorage.clear();
+        dispatch({ type: 'CLEAR_URI' });
+      },
+      client: state.baseUri !== null ? new ApolloClient({
+        uri: `${state.baseUri}/graphql`,
+        cache: Cache,
+      }) : null,
+      baseUri: state.baseUri,
     }),
-    []
+    [state.baseUri]
   );
 
   return (
-    <AuthContext.Provider value={authContext}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {
-          state.baseUri === null ?
-          <Stack.Screen name="Init" component={ConnectScreen} options={{
-            animationTypeForReplace: state.isClearing ? 'pop' : 'push',
-          }} /> :
-          <Stack.Screen name="Root" component={BottomTabNavigator} />
-        }
-        <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      </Stack.Navigator>
-    </AuthContext.Provider>
+    <ClientContext.Provider value={clientContext}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {
+            state.baseUri === null ?
+            <Stack.Screen name="Init" component={ConnectScreen} options={{
+              animationTypeForReplace: state.isClearing ? 'pop' : 'push',
+            }} /> :
+            <Stack.Screen name="Root" component={BottomTabNavigator} />
+          }
+          <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+        </Stack.Navigator>
+    </ClientContext.Provider>
   );
 }

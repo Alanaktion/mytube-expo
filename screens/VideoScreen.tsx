@@ -4,10 +4,10 @@ import { Video as VideoPlayer } from 'expo-av';
 import { gql, useQuery } from '@apollo/client';
 
 import { Icon, Text, View } from '../components/Themed';
-import { getBaseUri } from '../api/Client';
 import { Video } from '../types';
 import Colors from '../constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ClientContext } from '../api/Client';
 
 const VIDEO_QUERY = gql`
   query Videos($uuid: String!) {
@@ -81,7 +81,7 @@ export default function VideosScreen({ route, navigation }: Props) {
   const video: Video = data.videos.data[0];
   const { channel } = video;
 
-  const baseUri = getBaseUri();
+  const { baseUri } = React.useContext(ClientContext);
   const playerHeight = Math.round(dimensions.window.width / 16 * 9);
   const posterUrl = video.poster_url ? `${baseUri}${video.poster_url}` : `${baseUri}/images/posters/${video.uuid}`;
 
