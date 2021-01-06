@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import * as React from 'react';
 import { ActivityIndicator, Image, StyleSheet } from 'react-native';
-import { baseUri } from '../api/Client';
+import { getBaseUri } from '../api/Client';
 
 import { Icon, Text, View } from '../components/Themed';
 import { VideoList } from '../components/VideoList';
@@ -56,6 +56,7 @@ export default function ChannelScreen({ route, navigation }: Props) {
 
   const channel: Channel = data.channels.data[0];
 
+  const baseUri = getBaseUri();
   return (
     <View style={styles.container}>
       {/* {channel.image_url &&

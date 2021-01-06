@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text as DefaultText, View as DefaultView } from 'react-native';
+import { Text as DefaultText, TextInput as DefaultTextInput, View as DefaultView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import Colors from '../constants/Colors';
@@ -30,6 +30,7 @@ export type IconProps = ThemeProps & {
   size: number;
   name: string;
 };
+export type TextInputProps = ThemeProps & DefaultTextInput['props'];
 
 export function Text(props: TextProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
@@ -50,4 +51,11 @@ export function Icon(props: IconProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
   return <Ionicons color={color} {...otherProps} />;
+}
+
+export function TextInput(props: TextInputProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+
+  return <DefaultTextInput style={[{ color }, style]} {...otherProps} />;
 }

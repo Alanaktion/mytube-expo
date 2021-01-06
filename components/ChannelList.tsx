@@ -4,7 +4,7 @@ import { gql, useQuery } from "@apollo/react-hooks";
 import { useScrollToTop } from '@react-navigation/native';
 
 import { Icon, Text } from "./Themed";
-import { baseUri } from "../api/Client";
+import { getBaseUri } from "../api/Client";
 import { Channel } from "../types";
 
 const CHANNELS_QUERY = gql`
@@ -64,6 +64,7 @@ export function ChannelList({ onItemPress, search }: Props) {
     );
   }
 
+  const baseUri = getBaseUri();
   const renderItem = ({ item }: { item: Channel }) => (
     <TouchableOpacity
       style={styles.itemContainer}

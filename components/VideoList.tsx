@@ -4,7 +4,7 @@ import { gql, useQuery } from "@apollo/react-hooks";
 import { useScrollToTop } from '@react-navigation/native';
 
 import { Icon, Text } from "./Themed";
-import { baseUri } from "../api/Client";
+import { getBaseUri } from "../api/Client";
 import { Video } from "../types";
 import Colors from "../constants/Colors";
 
@@ -70,6 +70,7 @@ export function VideoList({ onItemPress, channelId, search }: Props) {
     </View>
   }
 
+  const baseUri = getBaseUri();
   const renderItem = ({ item }: { item: Video }) => (
     <TouchableOpacity
       style={styles.itemContainer}

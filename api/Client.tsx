@@ -1,6 +1,14 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-export const baseUri = "http://localhost:8000";
+let baseUri = '';
+
+export function getBaseUri() {
+  return baseUri;
+}
+
+export function setBaseUri(val: string) {
+  baseUri = val;
+}
 
 const cache = new InMemoryCache({
   typePolicies: {
