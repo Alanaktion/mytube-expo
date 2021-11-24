@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, Image, ScaledSize, ScrollView, StyleSheet } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Video as VideoPlayer } from 'expo-av';
 import { gql, useQuery } from '@apollo/client';
 
 import { Icon, Text, View } from '../components/Themed';
-import { Video } from '../types';
+import { Video, VideosParamList } from '../types';
 import Colors from '../constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ClientContext } from '../api/Client';
@@ -34,10 +35,7 @@ const VIDEO_QUERY = gql`
 
 const window = Dimensions.get('window');
 
-type Props = {
-  route: any;
-  navigation: any;
-};
+type Props = NativeStackScreenProps<VideosParamList, 'VideoScreen'>;
 
 export default function VideosScreen({ route, navigation }: Props) {
   const { uuid } = route.params;

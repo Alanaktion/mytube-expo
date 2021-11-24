@@ -45,6 +45,7 @@ export function VideoList({ onItemPress, channelId, search }: Props) {
   });
   const ref = useRef(null);
   useScrollToTop(ref);
+  const { baseUri } = React.useContext(ClientContext);
 
   if (loading) {
     return (
@@ -70,7 +71,6 @@ export function VideoList({ onItemPress, channelId, search }: Props) {
     </View>
   }
 
-  const { baseUri } = React.useContext(ClientContext);
   const renderItem = ({ item }: { item: Video }) => (
     <TouchableOpacity
       style={styles.itemContainer}

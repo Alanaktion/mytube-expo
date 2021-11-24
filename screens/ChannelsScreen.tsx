@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Icon, View } from '../components/Themed';
 import { ChannelList } from '../components/ChannelList';
-import { Channel } from '../types';
+import { Channel, ChannelsParamList } from '../types';
 import Colors from '../constants/Colors';
 
-export default function ChannelsScreen({ navigation }: { navigation: any }) {
+type Props = NativeStackScreenProps<ChannelsParamList, 'ChannelsScreen'>;
+
+export default function ChannelsScreen({ navigation }: Props) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (

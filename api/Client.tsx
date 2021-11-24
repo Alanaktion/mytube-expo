@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient, NormalizedCacheObject, InMemoryCache } from "@apollo/client";
 
 export const Cache = new InMemoryCache({
   typePolicies: {
@@ -35,7 +35,7 @@ export const Cache = new InMemoryCache({
 type ContextType = {
   setUri: (value: string) => void;
   clearUri: () => void;
-  client: ApolloClient<any>|null;
+  client: ApolloClient<NormalizedCacheObject>|null;
   baseUri: string|null;
 };
 

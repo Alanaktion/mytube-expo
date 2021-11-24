@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Icon, View } from '../components/Themed';
 import { VideoList } from '../components/VideoList';
 import Colors from '../constants/Colors';
-import { Video } from '../types';
+import { Video, VideosParamList } from '../types';
 
-export default function VideosScreen({ navigation }: { navigation: any }) {
+type Props = NativeStackScreenProps<VideosParamList, 'VideosScreen'>;
+
+export default function VideosScreen({ navigation }: Props) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -14,7 +17,6 @@ export default function VideosScreen({ navigation }: { navigation: any }) {
           onPress={() => {
             navigation.navigate('VideoSearchScreen');
           }}
-          style={{ marginRight: 10, paddingHorizontal: 5 }}
           accessibilityLabel="Search"
         >
           <Icon
@@ -25,6 +27,10 @@ export default function VideosScreen({ navigation }: { navigation: any }) {
           />
         </TouchableOpacity>
       ),
+      // headerSearchBarOptions: {
+      //   placeholder: 'Search',
+      //   hideWhenScrolling: false,
+      // }
     });
   }, [navigation]);
 

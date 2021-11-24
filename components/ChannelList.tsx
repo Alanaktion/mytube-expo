@@ -25,7 +25,7 @@ const CHANNELS_QUERY = gql`
 
 type Props = {
   onItemPress: Function;
-  search: String;
+  search?: String;
 };
 
 export function ChannelList({ onItemPress, search }: Props) {
@@ -37,6 +37,7 @@ export function ChannelList({ onItemPress, search }: Props) {
   });
   const ref = useRef(null);
   useScrollToTop(ref);
+  const { baseUri } = React.useContext(ClientContext);
 
   if (loading) {
     return (
@@ -64,7 +65,6 @@ export function ChannelList({ onItemPress, search }: Props) {
     );
   }
 
-  const { baseUri } = React.useContext(ClientContext);
   const renderItem = ({ item }: { item: Channel }) => (
     <TouchableOpacity
       style={styles.itemContainer}

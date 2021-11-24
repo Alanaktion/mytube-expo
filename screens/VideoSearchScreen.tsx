@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { StyleSheet, TextInput } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { View } from '../components/Themed';
 import { VideoList } from '../components/VideoList';
-import { Video } from '../types';
+import { Video, VideosParamList } from '../types';
 
-export default function VideoSearchScreen({ navigation }: { navigation: any }) {
+type Props = NativeStackScreenProps<VideosParamList, 'VideoSearchScreen'>;
+
+export default function VideoSearchScreen({ navigation }: Props) {
   const [searchText, setSearchText] = React.useState('');
 
   return (
@@ -16,6 +19,7 @@ export default function VideoSearchScreen({ navigation }: { navigation: any }) {
           onChangeText={text => setSearchText(text)}
           value={searchText}
           keyboardType="web-search"
+          placeholder="Search terms"
           autoFocus
         />
       </View>
@@ -37,6 +41,8 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     backgroundColor: '#eee',
+    borderBottomColor: '#ddd',
+    borderBottomWidth: 0.5,
     padding: 10,
   },
 });

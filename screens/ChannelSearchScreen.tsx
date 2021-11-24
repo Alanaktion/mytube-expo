@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { StyleSheet, TextInput } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
 import { ChannelList } from '../components/ChannelList';
-
 import { View } from '../components/Themed';
-import { Channel } from '../types';
+import { Channel, ChannelsParamList } from '../types';
 
-export default function ChannelSearchScreen({ navigation }: { navigation: any }) {
+type Props = NativeStackScreenProps<ChannelsParamList, 'ChannelSearchScreen'>;
+
+export default function ChannelSearchScreen({ navigation }: Props) {
   const [searchText, setSearchText] = React.useState('');
 
   return (

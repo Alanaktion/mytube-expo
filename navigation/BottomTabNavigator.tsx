@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import Colors from '../constants/Colors';
@@ -31,7 +31,10 @@ export default function BottomTabNavigator() {
     <ApolloProvider client={client}>
       <BottomTab.Navigator
         initialRouteName="Videos"
-        tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
+        screenOptions={{
+          tabBarActiveTintColor: Colors[colorScheme].tint,
+          headerShown: false,
+        }}>
         <BottomTab.Screen
           name="Videos"
           component={VideosNavigator}
@@ -60,13 +63,16 @@ export default function BottomTabNavigator() {
 
 // You can explore the built-in icon families and icons on the web at:
 // https://icons.expo.fyi/
-function TabBarIcon(props: { name: string; color: string }) {
+function TabBarIcon(props: {
+  name: React.ComponentProps<typeof Ionicons>['name'];
+  color: string;
+}) {
   return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
 }
 
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const VideosStack = createStackNavigator<VideosParamList>();
+const VideosStack = createNativeStackNavigator<VideosParamList>();
 
 function VideosNavigator() {
   return (
@@ -90,7 +96,7 @@ function VideosNavigator() {
   );
 }
 
-const ChannelsStack = createStackNavigator<ChannelsParamList>();
+const ChannelsStack = createNativeStackNavigator<ChannelsParamList>();
 
 function ChannelsNavigator() {
   return (
@@ -114,7 +120,7 @@ function ChannelsNavigator() {
   );
 }
 
-const AboutStack = createStackNavigator<AboutParamList>();
+const AboutStack = createNativeStackNavigator<AboutParamList>();
 
 function AboutNavigator() {
   return (

@@ -28,7 +28,7 @@ export type TextProps = ThemeProps & DefaultText['props'];
 export type ViewProps = ThemeProps & DefaultView['props'];
 export type IconProps = ThemeProps & {
   size: number;
-  name: string;
+  name: React.ComponentProps<typeof Ionicons>['name'];
 };
 export type TextInputProps = ThemeProps & DefaultTextInput['props'];
 

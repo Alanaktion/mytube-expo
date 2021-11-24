@@ -1,11 +1,13 @@
 import { gql, useQuery } from '@apollo/client';
 import * as React from 'react';
 import { ActivityIndicator, Image, StyleSheet } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { HeaderTitle } from '@react-navigation/elements';
 
 import { Icon, Text, View } from '../components/Themed';
 import { VideoList } from '../components/VideoList';
 import { ClientContext } from '../api/Client';
-import { Channel, Video } from '../types';
+import { Channel, ChannelsParamList, Video } from '../types';
 
 const CHANNEL_QUERY = gql`
   query Channel($uuid: String!) {
@@ -22,19 +24,32 @@ const CHANNEL_QUERY = gql`
   }
 `;
 
-type Props = {
-  route: any;
-  navigation: any;
-};
+type Props = NativeStackScreenProps<ChannelsParamList, 'ChannelScreen'>;
 
 export default function ChannelScreen({ route, navigation }: Props) {
-  const { uuid } = route.params;
+  const { uuid, title } = route.params;
   const { data, loading, error } = useQuery(CHANNEL_QUERY, {
     variables: {
       uuid,
     },
     fetchPolicy: 'network-only',
   });
+  const { baseUri } = React.useContext(ClientContext);
+  const channel: Channel = data?.channels ? data.channels.data[0] : null;
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <View style={styles.header}>
+          {channel?.image_url &&
+            <Image source={{ uri: `${baseUri}${channel.image_url}` }} style={styles.headerAvatar} /> ||
+            <View style={styles.headerAvatar} />
+          }
+          <HeaderTitle>{channel?.title || title}</HeaderTitle>
+        </View>
+      ),
+    });
+  }, [data]);
 
   if (loading) {
     return (
@@ -54,16 +69,8 @@ export default function ChannelScreen({ route, navigation }: Props) {
     );
   }
 
-  const channel: Channel = data.channels.data[0];
-
-  const { baseUri } = React.useContext(ClientContext);
   return (
     <View style={styles.container}>
-      {/* {channel.image_url &&
-        <View style={styles.channel}>
-          <Image source={{ uri: `${baseUri}${channel.image_url}` }} style={styles.avatar} />
-        </View>
-      } */}
       <VideoList channelId={channel.id} onItemPress={(video: Video) => {
         navigation.navigate('VideoScreen', {
           uuid: video.uuid,
@@ -75,6 +82,17 @@ export default function ChannelScreen({ route, navigation }: Props) {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerAvatar: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    marginRight: 5,
+    backgroundColor: '#eee',
+  },
   container: {
     flex: 1,
   },

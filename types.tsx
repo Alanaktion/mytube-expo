@@ -1,8 +1,16 @@
+import { NavigatorScreenParams } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
 export type RootStackParamList = {
   Init: undefined;
-  Root: undefined;
+  Root: NavigatorScreenParams<BottomTabParamList> | undefined;
   NotFound: undefined;
 };
+
+export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
+  RootStackParamList,
+  Screen
+>;
 
 export type BottomTabParamList = {
   Videos: undefined;
@@ -13,13 +21,19 @@ export type BottomTabParamList = {
 export type VideosParamList = {
   VideosScreen: undefined;
   VideoSearchScreen: undefined;
-  VideoScreen: undefined;
+  VideoScreen: {
+    uuid: string,
+    title: string,
+  };
 };
 
 export type ChannelsParamList = {
   ChannelsScreen: undefined;
   ChannelSearchScreen: undefined;
-  ChannelScreen: undefined;
+  ChannelScreen: {
+    uuid: string,
+    title: string,
+  };
 };
 
 export type AboutParamList = {
