@@ -13,6 +13,7 @@ const CHANNELS_QUERY = gql`
       data {
         id
         uuid
+        type
         title
         image_url
       }
@@ -79,6 +80,7 @@ export function ChannelList({ onItemPress, search }: Props) {
       }
       <View style={{ flexShrink: 1 }}>
         <Text>{item.title}</Text>
+        <Text style={{ opacity: 0.5, marginTop: 5 }}>{item.type}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -118,6 +120,8 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     marginRight: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(127, 127, 127, 0.2)',
     borderRadius: 30,
   },
 });

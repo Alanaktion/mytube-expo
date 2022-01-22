@@ -76,7 +76,7 @@ const VideosStack = createNativeStackNavigator<VideosParamList>();
 
 function VideosNavigator() {
   return (
-    <VideosStack.Navigator>
+    <VideosStack.Navigator initialRouteName="VideosScreen">
       <VideosStack.Screen
         name="VideosScreen"
         component={VideosScreen}
@@ -100,7 +100,7 @@ const ChannelsStack = createNativeStackNavigator<ChannelsParamList>();
 
 function ChannelsNavigator() {
   return (
-    <ChannelsStack.Navigator>
+    <ChannelsStack.Navigator initialRouteName="ChannelsScreen">
       <ChannelsStack.Screen
         name="ChannelsScreen"
         component={ChannelsScreen}
@@ -124,7 +124,7 @@ const AboutStack = createNativeStackNavigator<AboutParamList>();
 
 function AboutNavigator() {
   return (
-    <AboutStack.Navigator>
+    <AboutStack.Navigator initialRouteName="AboutScreen">
       <AboutStack.Screen
         name="AboutScreen"
         component={AboutScreen}

@@ -57,6 +57,7 @@ export default function VideosScreen({ route, navigation }: Props) {
       Dimensions.removeEventListener('change', onChange);
     };
   });
+  const { baseUri } = React.useContext(ClientContext);
 
   if (loading) {
     return (
@@ -79,7 +80,6 @@ export default function VideosScreen({ route, navigation }: Props) {
   const video: Video = data.videos.data[0];
   const { channel } = video;
 
-  const { baseUri } = React.useContext(ClientContext);
   const playerHeight = Math.round(dimensions.window.width / 16 * 9);
   const posterUrl = video.poster_url ? `${baseUri}${video.poster_url}` : `${baseUri}/images/posters/${video.uuid}`;
 
@@ -111,9 +111,13 @@ export default function VideosScreen({ route, navigation }: Props) {
         <View style={styles.meta}>
           <Text style={styles.title}>{video.title}</Text>
           <TouchableOpacity style={styles.channel} activeOpacity={0.6} onPress={() => {
-            navigation.navigate('ChannelScreen', {
-              uuid: channel.uuid,
-              title: channel.title,
+            navigation.navigate('Channels', {
+              screen: 'ChannelScreen',
+              initial: false,
+              params: {
+                uuid: channel.uuid,
+                title: channel.title,
+              },
             });
           }}>
             {channel.image_url &&

@@ -4,6 +4,7 @@ import * as React from 'react';
 import { ColorSchemeName } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApolloClient } from '@apollo/client';
+import AppLoading from 'expo-app-loading';
 
 import ConnectScreen from '../screens/ConnectScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -97,6 +98,10 @@ function RootNavigator() {
     }),
     [state.baseUri]
   );
+
+  if (state.isLoading) {
+    return <AppLoading />;
+  }
 
   return (
     <ClientContext.Provider value={clientContext}>

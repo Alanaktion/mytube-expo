@@ -2,6 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
+  Loading: undefined;
   Init: undefined;
   Root: NavigatorScreenParams<BottomTabParamList> | undefined;
   NotFound: undefined;
@@ -12,10 +13,13 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> = Nati
   Screen
 >;
 
+// Typescript is dumb, circular references are really required here but not supported, so we just use undefined instead.
+// This will show type errors in nested navigate() calls, but they do still work.
+
 export type BottomTabParamList = {
-  Videos: undefined;
-  Channels: undefined;
-  About: undefined;
+  Videos: undefined; // NavigatorScreenParams<VideosParamList> | undefined;
+  Channels: undefined; // NavigatorScreenParams<ChannelsParamList> | undefined;
+  About: undefined; // NavigatorScreenParams<AboutParamList> | undefined;
 };
 
 export type VideosParamList = {
@@ -25,7 +29,7 @@ export type VideosParamList = {
     uuid: string,
     title: string,
   };
-};
+} & BottomTabParamList;
 
 export type ChannelsParamList = {
   ChannelsScreen: undefined;
@@ -34,11 +38,11 @@ export type ChannelsParamList = {
     uuid: string,
     title: string,
   };
-};
+} & BottomTabParamList;
 
 export type AboutParamList = {
   AboutScreen: undefined;
-};
+} & BottomTabParamList;
 
 export type Video = {
   id: number;

@@ -5,7 +5,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Icon, View } from '../components/Themed';
 import { VideoList } from '../components/VideoList';
 import Colors from '../constants/Colors';
-import { Video, VideosParamList } from '../types';
+import { Channel, Video, VideosParamList } from '../types';
 
 type Props = NativeStackScreenProps<VideosParamList, 'VideosScreen'>;
 
@@ -36,12 +36,24 @@ export default function VideosScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <VideoList onItemPress={(video: Video) => {
-        navigation.navigate('VideoScreen', {
-          uuid: video.uuid,
-          title: video.title,
-        });
-      }} />
+      <VideoList
+        onItemPress={(video: Video) => {
+          navigation.navigate('VideoScreen', {
+            uuid: video.uuid,
+            title: video.title,
+          });
+        }}
+        onChannelPress={(channel: Channel) => {
+          navigation.navigate('Channels', {
+            screen: 'ChannelScreen',
+            initial: false,
+            params: {
+              uuid: channel.uuid,
+              title: channel.title,
+            }
+          });
+        }}
+      />
     </View>
   );
 }

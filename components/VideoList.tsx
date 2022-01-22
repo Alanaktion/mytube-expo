@@ -4,7 +4,7 @@ import { gql, useQuery } from "@apollo/react-hooks";
 import { useScrollToTop } from '@react-navigation/native';
 
 import { Icon, Text } from "./Themed";
-import { Video } from "../types";
+import { Channel, Video } from "../types";
 import Colors from "../constants/Colors";
 import { ClientContext } from "../api/Client";
 
@@ -30,12 +30,13 @@ const VIDEOS_QUERY = gql`
 `;
 
 type Props = {
-  onItemPress: Function;
+  onItemPress: (video: Video) => void;
+  onChannelPress: (channel: Channel) => void;
   channelId?: Number;
   search?: String;
 };
 
-export function VideoList({ onItemPress, channelId, search }: Props) {
+export function VideoList({ onItemPress, onChannelPress, channelId, search }: Props) {
   const { data, loading, error, fetchMore } = useQuery(VIDEOS_QUERY, {
     variables: {
       page: 1,
@@ -82,7 +83,11 @@ export function VideoList({ onItemPress, channelId, search }: Props) {
       <Image style={styles.thumbnail} source={{ uri: item.thumbnail_url ? `${baseUri}${item.thumbnail_url}` : `${baseUri}/images/posters/${item.uuid}` }} />
       <View style={{ flexShrink: 1 }}>
         <Text style={{ marginBottom: 2, flexGrow: 1, }}>{item.title}</Text>
-        <Text lightColor={Colors.light.link} darkColor={Colors.dark.link}>{item.channel.title}</Text>
+        <TouchableOpacity onPress={() => {
+          onChannelPress(item.channel);
+        }}>
+          <Text lightColor={Colors.light.link} darkColor={Colors.dark.link}>{item.channel.title}</Text>
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
