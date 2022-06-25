@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { ActivityIndicator, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { gql, useQuery } from "@apollo/react-hooks";
+import { gql, useQuery } from "@apollo/client";
 import { useScrollToTop } from '@react-navigation/native';
 
 import { Icon, Text } from "./Themed";
@@ -47,6 +47,8 @@ export function VideoList({ onItemPress, onChannelPress, channelId, search }: Pr
   const ref = useRef(null);
   useScrollToTop(ref);
   const { baseUri } = React.useContext(ClientContext);
+
+  console.warn("VideoList", { data, loading, error });
 
   if (loading) {
     return (

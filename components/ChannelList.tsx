@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { ActivityIndicator, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { gql, useQuery } from "@apollo/react-hooks";
+import { gql, useQuery } from "@apollo/client";
 import { useScrollToTop } from '@react-navigation/native';
 
 import { Icon, Text } from "./Themed";

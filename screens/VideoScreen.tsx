@@ -20,13 +20,17 @@ const VIDEO_QUERY = gql`
         description
         poster_url
         source_link
-        file_link
         published_at
         created_at
         channel {
           uuid
           title
           image_url
+        }
+        files {
+          id
+          url
+          mime_type
         }
       }
     }
@@ -82,12 +86,13 @@ export default function VideosScreen({ route, navigation }: Props) {
 
   const playerHeight = Math.round(dimensions.window.width / 16 * 9);
   const posterUrl = video.poster_url ? `${baseUri}${video.poster_url}` : `${baseUri}/images/posters/${video.uuid}`;
+  const fileUrl = video.files[0]?.url;
 
   return (
     <View style={styles.container}>
-      {video.file_link ?
+      {fileUrl ?
         <VideoPlayer
-          source={{ uri: `${baseUri}${video.file_link}` }}
+          source={{ uri: `${baseUri}${fileUrl}` }}
           resizeMode="contain"
           useNativeControls
           shouldPlay

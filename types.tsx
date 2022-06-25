@@ -53,10 +53,17 @@ export type Video = {
   thumbnail_url: string;
   poster_url: string;
   source_link: string;
-  file_link: string;
   published_at: string;
   created_at: string;
   channel: Channel;
+  files: VideoFile[];
+}
+
+export type VideoFile = {
+  id: number;
+  url: string;
+  mime_type: string;
+  created_at: string;
 }
 
 export type Channel = {

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { ColorSchemeName } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApolloClient } from '@apollo/client';
-import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
 
 import ConnectScreen from '../screens/ConnectScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -62,17 +62,19 @@ function RootNavigator() {
   );
 
   React.useEffect(() => {
-    // Fetch the base URI from storage then navigate to the appropriate screen
     const bootstrapAsync = async () => {
-      let val;
+      await SplashScreen.preventAutoHideAsync();
 
+      // Fetch the base URI from storage then navigate to the appropriate screen
+      let val;
       try {
         val = await AsyncStorage.getItem('baseUri');
       } catch (e) {
         // Restoring base URI failed
       }
-
       dispatch({ type: 'RESTORE_URI', uri: val });
+
+      await SplashScreen.hideAsync();
     };
 
     bootstrapAsync();
@@ -100,7 +102,7 @@ function RootNavigator() {
   );
 
   if (state.isLoading) {
-    return <AppLoading />;
+    return null;
   }
 
   return (
