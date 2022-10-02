@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { View } from '../components/Themed';
 import { VideoList } from '../components/VideoList';
-import { Video, VideosParamList } from '../types';
+import { Channel, Video, VideosParamList } from '../types';
 
 type Props = NativeStackScreenProps<VideosParamList, 'VideoSearchScreen'>;
 
@@ -24,12 +24,25 @@ export default function VideoSearchScreen({ navigation }: Props) {
         />
       </View>
       {searchText.length > 0 &&
-        <VideoList search={searchText} onItemPress={(video: Video) => {
-          navigation.navigate('VideoScreen', {
-            uuid: video.uuid,
-            title: video.title,
-          });
-        }} />
+        <VideoList
+          search={searchText}
+          onItemPress={(video: Video) => {
+            navigation.navigate('VideoScreen', {
+              uuid: video.uuid,
+              title: video.title,
+            });
+          }}
+          onChannelPress={(channel: Channel) => {
+            navigation.navigate('Channels', {
+              screen: 'ChannelScreen',
+              initial: false,
+              params: {
+                uuid: channel.uuid,
+                title: channel.title,
+              }
+            });
+          }}
+        />
       }
     </View>
   );

@@ -48,8 +48,6 @@ export function VideoList({ onItemPress, onChannelPress, channelId, search }: Pr
   useScrollToTop(ref);
   const { baseUri } = React.useContext(ClientContext);
 
-  console.warn("VideoList", { data, loading, error });
-
   if (loading) {
     return (
       <View style={styles.centerContainer}>
