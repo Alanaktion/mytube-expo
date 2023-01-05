@@ -31,7 +31,7 @@ const VIDEOS_QUERY = gql`
 
 type Props = {
   onItemPress: (video: Video) => void;
-  onChannelPress: (channel: Channel) => void;
+  onChannelPress?: (channel: Channel) => void;
   channelId?: Number;
   search?: String;
 };
@@ -80,14 +80,18 @@ export function VideoList({ onItemPress, onChannelPress, channelId, search }: Pr
       }}
       activeOpacity={0.6}
     >
-      <Image style={styles.thumbnail} source={{ uri: item.thumbnail_url ? `${baseUri}${item.thumbnail_url}` : `${baseUri}/images/posters/${item.uuid}` }} />
+      <Image style={styles.thumbnail} source={{ uri: item.thumbnail_url ? `${baseUri}${item.thumbnail_url}` : `${baseUri}/placeholder-video.svg` }} />
       <View style={{ flexShrink: 1 }}>
         <Text style={{ marginBottom: 2, flexGrow: 1, }}>{item.title}</Text>
-        <TouchableOpacity onPress={() => {
-          onChannelPress(item.channel);
-        }}>
+        {onChannelPress ? (
+          <TouchableOpacity onPress={() => {
+            onChannelPress(item.channel);
+          }}>
+            <Text lightColor={Colors.light.link} darkColor={Colors.dark.link}>{item.channel.title}</Text>
+          </TouchableOpacity>
+        ) : (
           <Text lightColor={Colors.light.link} darkColor={Colors.dark.link}>{item.channel.title}</Text>
-        </TouchableOpacity>
+        )}
       </View>
     </TouchableOpacity>
   );

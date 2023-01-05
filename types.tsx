@@ -6,6 +6,10 @@ export type RootStackParamList = {
   Init: undefined;
   Root: NavigatorScreenParams<BottomTabParamList> | undefined;
   NotFound: undefined;
+  VideoScreen: {
+    uuid: string,
+    title: string,
+  };
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -13,35 +17,32 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> = Nati
   Screen
 >;
 
-// Typescript is dumb, circular references are really required here but not supported, so we just use undefined instead.
-// This will show type errors in nested navigate() calls, but they do still work.
+// Circular references are ideal here but not supported, so we just use any instead.
 
 export type BottomTabParamList = {
-  Videos: undefined; // NavigatorScreenParams<VideosParamList> | undefined;
-  Channels: undefined; // NavigatorScreenParams<ChannelsParamList> | undefined;
-  About: undefined; // NavigatorScreenParams<AboutParamList> | undefined;
+  Videos: any; // NavigatorScreenParams<VideosParamList> | undefined;
+  Channels: any; // NavigatorScreenParams<ChannelsParamList> | undefined;
+  About: any; // NavigatorScreenParams<AboutParamList> | undefined;
 };
 
 export type VideosParamList = {
-  VideosScreen: undefined;
-  VideoSearchScreen: undefined;
-  VideoScreen: {
-    uuid: string,
-    title: string,
-  };
+  VideosScreen: any;
+  VideoSearchScreen: any;
+  VideoScreen: RootStackParamList["VideoScreen"];
 } & BottomTabParamList;
 
 export type ChannelsParamList = {
-  ChannelsScreen: undefined;
-  ChannelSearchScreen: undefined;
+  ChannelsScreen: any;
+  ChannelSearchScreen: any;
   ChannelScreen: {
     uuid: string,
     title: string,
   };
+  VideoScreen: RootStackParamList["VideoScreen"];
 } & BottomTabParamList;
 
 export type AboutParamList = {
-  AboutScreen: undefined;
+  AboutScreen: any;
 } & BottomTabParamList;
 
 export type Video = {

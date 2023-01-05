@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, Image, ScaledSize, ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator, Dimensions, EmitterSubscription, Image, ScaledSize, ScrollView, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Video as VideoPlayer } from 'expo-av';
+import { Video as VideoPlayer, ResizeMode } from 'expo-av';
 import { gql, useQuery } from '@apollo/client';
 
 import { Icon, Text, View } from '../components/Themed';
@@ -50,15 +50,17 @@ export default function VideosScreen({ route, navigation }: Props) {
     fetchPolicy: 'network-only',
   });
   const [dimensions, setDimensions] = useState({ window });
+  const [status, setStatus] = React.useState({});
   const ref = useRef(null);
 
   const onChange = ({ window }: { window: ScaledSize }) => {
     setDimensions({ window });
   }
+  let listener: EmitterSubscription;
   useEffect(() => {
-    Dimensions.addEventListener('change', onChange);
+    listener = Dimensions.addEventListener('change', onChange);
     return () => {
-      Dimensions.removeEventListener('change', onChange);
+      listener.remove();
     };
   });
   const { baseUri } = React.useContext(ClientContext);
@@ -85,21 +87,23 @@ export default function VideosScreen({ route, navigation }: Props) {
   const { channel } = video;
 
   const playerHeight = Math.round(dimensions.window.width / 16 * 9);
-  const posterUrl = video.poster_url ? `${baseUri}${video.poster_url}` : `${baseUri}/images/posters/${video.uuid}`;
+  const posterUrl = video.poster_url ? `${baseUri}${video.poster_url}` : `${baseUri}/placeholder-video.svg`;
   const fileUrl = video.files[0]?.url;
 
   return (
     <View style={styles.container}>
       {fileUrl ?
         <VideoPlayer
-          source={{ uri: `${baseUri}${fileUrl}` }}
-          resizeMode="contain"
+          source={{ uri: fileUrl }}
+          resizeMode={ResizeMode.CONTAIN}
           useNativeControls
           shouldPlay
           usePoster
           posterSource={{ uri: posterUrl }}
           style={{ height: playerHeight }}
           ref={ref}
+          onPlaybackStatusUpdate={status => setStatus(() => status)}
+          onError={error => console.warn({ error, uri: fileUrl })}
         /> :
         <View style={{ position: 'relative' }}>
           <Image

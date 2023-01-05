@@ -17,7 +17,6 @@ export default function ChannelsScreen({ navigation }: Props) {
           onPress={() => {
             navigation.navigate('ChannelSearchScreen');
           }}
-          style={{ marginRight: 10, paddingHorizontal: 5 }}
           accessibilityLabel="Search"
         >
           <Icon

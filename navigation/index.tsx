@@ -3,10 +3,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { ColorSchemeName } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ApolloClient } from '@apollo/client';
+import { ApolloClient, ApolloProvider } from '@apollo/client';
 import * as SplashScreen from 'expo-splash-screen';
 
 import ConnectScreen from '../screens/ConnectScreen';
+import VideoScreen from '../screens/VideoScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import { RootStackParamList } from '../types';
 import { Cache, ClientContext } from '../api/Client';
@@ -105,18 +106,29 @@ function RootNavigator() {
     return null;
   }
 
+  const navigator = (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {
+        state.baseUri === null ?
+        <Stack.Screen name="Init" component={ConnectScreen} options={{
+          animationTypeForReplace: state.isClearing ? 'pop' : 'push',
+        }} /> :
+        <Stack.Screen name="Root" component={BottomTabNavigator} />
+      }
+      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+      <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Screen name="VideoScreen" component={VideoScreen} />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+
   return (
     <ClientContext.Provider value={clientContext}>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {
-            state.baseUri === null ?
-            <Stack.Screen name="Init" component={ConnectScreen} options={{
-              animationTypeForReplace: state.isClearing ? 'pop' : 'push',
-            }} /> :
-            <Stack.Screen name="Root" component={BottomTabNavigator} />
-          }
-          <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-        </Stack.Navigator>
+      {clientContext.client && (
+        <ApolloProvider client={clientContext.client}>
+          {navigator}
+        </ApolloProvider>
+      ) || (navigator)}
     </ClientContext.Provider>
   );
 }

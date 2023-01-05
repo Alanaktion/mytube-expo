@@ -41,7 +41,6 @@ export default function ConnectScreen() {
                   onChangeText={text => onChangeText(text)}
                   value={value}
                   autoCapitalize="none"
-                  autoCompleteType="off"
                   autoCorrect={false}
                   autoFocus
                   keyboardType="url"

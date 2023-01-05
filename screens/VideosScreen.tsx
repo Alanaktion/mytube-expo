@@ -4,8 +4,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Icon, View } from '../components/Themed';
 import { VideoList } from '../components/VideoList';
-import Colors from '../constants/Colors';
 import { Channel, Video, VideosParamList } from '../types';
+import Colors from '../constants/Colors';
 
 type Props = NativeStackScreenProps<VideosParamList, 'VideosScreen'>;
 
@@ -27,10 +27,6 @@ export default function VideosScreen({ navigation }: Props) {
           />
         </TouchableOpacity>
       ),
-      // headerSearchBarOptions: {
-      //   placeholder: 'Search',
-      //   hideWhenScrolling: false,
-      // }
     });
   }, [navigation]);
 
