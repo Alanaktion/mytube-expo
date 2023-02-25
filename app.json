@@ -2,7 +2,7 @@
   "expo": {
     "name": "MyTube",
     "slug": "mytube",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "mytube",
@@ -14,7 +14,8 @@
       "backgroundColor": "#60a5fa"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/f6519e42-5f46-41a8-9ac2-597f3bbe44f0"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -33,6 +34,14 @@
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f6519e42-5f46-41a8-9ac2-597f3bbe44f0"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }

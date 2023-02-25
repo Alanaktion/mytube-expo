@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { ActivityIndicator, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { gql, useQuery } from "@apollo/client";
+import { gql, NetworkStatus, useQuery } from "@apollo/client";
 import { useScrollToTop } from '@react-navigation/native';
 
 import { Icon, Text } from "./Themed";
@@ -37,18 +37,19 @@ type Props = {
 };
 
 export function VideoList({ onItemPress, onChannelPress, channelId, search }: Props) {
-  const { data, loading, error, fetchMore } = useQuery(VIDEOS_QUERY, {
+  const { data, loading, error, fetchMore, refetch, networkStatus } = useQuery(VIDEOS_QUERY, {
     variables: {
       page: 1,
       channelId,
       search,
     },
+    notifyOnNetworkStatusChange: true,
   });
   const ref = useRef(null);
   useScrollToTop(ref);
   const { baseUri } = React.useContext(ClientContext);
 
-  if (loading) {
+  if (loading && networkStatus === NetworkStatus.loading) {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" />
@@ -112,6 +113,10 @@ export function VideoList({ onItemPress, onChannelPress, channelId, search }: Pr
         }
       }}
       onEndReachedThreshold={0.15}
+      onRefresh={() => {
+        refetch();
+      }}
+      refreshing={networkStatus === NetworkStatus.refetch}
       ref={ref}
     />
   );
