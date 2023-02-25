@@ -32,8 +32,8 @@ const VIDEOS_QUERY = gql`
 type Props = {
   onItemPress: (video: Video) => void;
   onChannelPress?: (channel: Channel) => void;
-  channelId?: Number;
-  search?: String;
+  channelId?: number;
+  search?: string;
 };
 
 export function VideoList({ onItemPress, onChannelPress, channelId, search }: Props) {
@@ -67,9 +67,11 @@ export function VideoList({ onItemPress, onChannelPress, channelId, search }: Pr
   }
 
   if (!data.videos.total) {
-    <View style={styles.centerContainer}>
-      <Text>No videos found.</Text>
-    </View>
+    return (
+      <View style={styles.centerContainer}>
+        <Text>No videos found.</Text>
+      </View>
+    );
   }
 
   const renderItem = ({ item }: { item: Video }) => (

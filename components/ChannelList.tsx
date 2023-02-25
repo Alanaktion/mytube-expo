@@ -26,7 +26,7 @@ const CHANNELS_QUERY = gql`
 
 type Props = {
   onItemPress: Function;
-  search?: String;
+  search?: string;
 };
 
 export function ChannelList({ onItemPress, search }: Props) {

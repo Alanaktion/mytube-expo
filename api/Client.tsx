@@ -7,7 +7,7 @@ export const Cache = new InMemoryCache({
       fields: {
         videos: {
           keyArgs: ['id', 'uuid', 'channel_id', 'search'],
-          merge(existing: any = {data: []}, incoming: any) {
+          merge(existing: any = {data: []}, incoming: any = {}) {
             return {
               current_page: incoming.current_page,
               last_page: incoming.last_page,
@@ -18,7 +18,7 @@ export const Cache = new InMemoryCache({
         },
         channels: {
           keyArgs: ['id', 'uuid', 'search'],
-          merge(existing: any = {data: []}, incoming: any) {
+          merge(existing: any = {data: []}, incoming: any = {}) {
             return {
               current_page: incoming.current_page,
               last_page: incoming.last_page,
