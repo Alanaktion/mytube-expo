@@ -59,7 +59,7 @@ export function ChannelList({ onItemPress, search }: Props) {
     );
   }
 
-  if (!data.channels.total) {
+  if (!data?.channels?.total) {
     return (
       <View style={styles.centerContainer}>
         <Text>No channels found.</Text>
@@ -104,6 +104,11 @@ export function ChannelList({ onItemPress, search }: Props) {
         refetch();
       }}
       refreshing={networkStatus === NetworkStatus.refetch}
+      ListFooterComponent={() => (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" animating={networkStatus === NetworkStatus.fetchMore} />
+        </View>
+      )}
       ref={ref}
     />
   );

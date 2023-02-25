@@ -67,7 +67,7 @@ export function VideoList({ onItemPress, onChannelPress, channelId, search }: Pr
     );
   }
 
-  if (!data.videos.total) {
+  if (!data?.videos?.total) {
     return (
       <View style={styles.centerContainer}>
         <Text>No videos found.</Text>
@@ -117,6 +117,11 @@ export function VideoList({ onItemPress, onChannelPress, channelId, search }: Pr
         refetch();
       }}
       refreshing={networkStatus === NetworkStatus.refetch}
+      ListFooterComponent={() => (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" animating={networkStatus === NetworkStatus.fetchMore} />
+        </View>
+      )}
       ref={ref}
     />
   );
